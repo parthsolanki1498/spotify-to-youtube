@@ -119,7 +119,7 @@ function App() {
   return (
     <GoogleOAuthProvider clientId="your-google-client-id">
       <div className="App">
-        <h1>Spotify to YouTube Playlist Migrator</h1>
+        <h1>Spotify to YouTube Playlist </h1>
         
         {/* Buttons to log in to Spotify and YouTube */}
         <button onClick={handleSpotifyLogin}>Login to Spotify</button>
