@@ -5,16 +5,20 @@ import youtubeLogo from "../img/youtube_logo.png"; // YouTube logo
 
 function Hero() {
   const [isHovered, setIsHovered] = useState(false);
+  const [logo, setLogo] = useState(spotifyLogo); // Initialize with Spotify logo
 
   const bg = {
     hover: {
       left: "2rem",
+      opacity: 1, // Make sure it's fully visible when hovered
     },
     initial: {
       left: "19rem",
       top: "-10rem",
+      opacity: 1, // Make sure it's fully visible initially
     },
   };
+
   const musicPlayer = {
     hover: {
       left: "295px",
@@ -42,11 +46,17 @@ function Hero() {
 
   // Function to change logo during hover
   const handleHover = () => {
-    setIsHovered(true); // Switch to YouTube logo immediately on hover
+    setIsHovered(true);
+    setTimeout(() => {
+      setLogo(youtubeLogo); // Switch to YouTube logo after a delay
+    }, 250); // Delay of 500ms before switching to YouTube logo
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false); // Reset back to Spotify logo immediately on mouse leave
+    setIsHovered(false);
+    setTimeout(() => {
+      setLogo(spotifyLogo); // Reset back to Spotify logo after a delay
+    }, 250); // Delay of 500ms before switching back to Spotify logo
   };
 
   return (
@@ -68,14 +78,15 @@ function Hero() {
 
         {/* right side */}
         <div className="images relative w-[50%]">
-          {/* Spotify/YouTube logo switch */}
+          {/* Spotify/YouTube logo switch with fade effect */}
           <motion.img
             variants={bg}
             animate={isHovered ? "hover" : "initial"}
-            transition={{ duration: 1, type: "ease-out" }}
-            src={isHovered ? youtubeLogo : spotifyLogo} // Instant logo switch
+            transition={{ duration: 0.5, type: "ease-out" }}
+            src={logo} // Use the current logo state
             alt="logo"
             className="absolute w-[50%] top-[-10rem] left-[19rem]"
+            style={{ opacity: isHovered ? 0 : 1 }} // Fade out when hovered
           />
 
           {/* Main phone image */}
