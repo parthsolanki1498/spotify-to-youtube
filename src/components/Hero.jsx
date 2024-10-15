@@ -64,9 +64,9 @@ function Hero() {
       <div className="wrapper flex items-center justify-between px-[5rem] w-[100%] h-[35rem] relative z-10">
         {/* left side */}
         <div className="headings flex flex-col items-start justify-center h-[100%] text-[3rem]">
-          <span>Experience The</span>
+          <span>A smooth way to convert your</span>
           <span>
-            <b>Best Quality Music</b>
+            <b>Spotify Playlist to Youtube</b>
           </span>
 
           <span className="text-[15px] text-[#525D6E">
