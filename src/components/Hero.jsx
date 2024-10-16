@@ -66,7 +66,9 @@ function Hero() {
         <div className="headings flex flex-col items-start justify-center h-[100%] text-[3rem]">
           <span>A smooth way to convert your</span>
           <span>
-            <b>Spotify Playlist to Youtube</b>
+            <b className="text-green-500">Spotify</b>
+            <b> playlist to</b>
+            <b className="text-red-500"> Youtube</b>
           </span>
 
           <span className="text-[15px] text-[#525D6E">

@@ -1,12 +1,16 @@
 import React from 'react'
 import CenterMenu from './CenterMenu'
 import { GoogleLogin } from '@react-oauth/google'
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
 
 
+  const navigate = useNavigate();
+
   const responseMessage = (response) => {
     console.log(response);
+    navigate('/dashboard');
 };
 const errorMessage = (error) => {
     console.log(error);
