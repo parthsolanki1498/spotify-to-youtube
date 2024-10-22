@@ -1,0 +1,33 @@
+/* src/IndexPage.css */
+.index-container {
+    text-align: center;
+    margin-top: 100px;
+  }
+  
+  .login-btn, .sync-btn {
+    padding: 10px 20px;
+    margin: 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .spotify-btn {
+    background-color: #1DB954;
+    color: white;
+  }
+  
+  .sync-btn {
+    background-color: #FF0000;
+    color: white;
+  }
+  
+  .spotify-btn:hover {
+    background-color: #1aa34a;
+  }
+  
+  .sync-btn:hover {
+    background-color: #cc0000;
+  }
+  
