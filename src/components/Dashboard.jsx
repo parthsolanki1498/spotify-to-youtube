@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { migrateSpotifyPlaylistToYouTube } from './PlaylistMigration';
 
 // Spotify and YouTube OAuth and API Configuration from .env
 const SPOTIFY_CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
@@ -9,7 +10,7 @@ const SPOTIFY_AUTH_URL = `https://accounts.spotify.com/authorize?response_type=t
 const YOUTUBE_CLIENT_ID = process.env.REACT_APP_YOUTUBE_CLIENT_ID;
 const YOUTUBE_REDIRECT_URI = process.env.REACT_APP_YOUTUBE_REDIRECT_URI;
 const YOUTUBE_API_BASE_URL = process.env.REACT_APP_YOUTUBE_API_BASE_URL;
-const YOUTUBE_AUTH_URL = `https://accounts.google.com/o/oauth2/auth?client_id=${YOUTUBE_CLIENT_ID}&redirect_uri=${YOUTUBE_REDIRECT_URI}&response_type=token&scope=https://www.googleapis.com/auth/youtube.readonly`;
+const YOUTUBE_AUTH_URL = `https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtube.readonly&redirect_uri=${YOUTUBE_REDIRECT_URI}&response_type=token&client_id=${YOUTUBE_CLIENT_ID}`;
 
 function Dashboard() {
   const [spotifyToken, setSpotifyToken] = useState(null);
@@ -105,17 +106,20 @@ function Dashboard() {
       {/* Container for the two boxes */}
       <div className="flex space-x-16">
         {/* Left Section: Spotify Login and Playlists */}
-        <div className="w-[500px] h-[500px] bg-[#1DB954] flex flex-col items-center justify-center rounded-lg shadow-lg p-6">
-          <h1 className="text-4xl text-white mb-6">Spotify</h1>
+        <div className="w-[500px] h-[600px] bg-[#1DB954] flex flex-col items-center justify-center rounded-lg shadow-lg p-6 relative">
+          <h1 className="text-4xl text-white font-bold mb-6">Spotify</h1>
 
           {spotifyToken ? (
-            <div className="w-full h-full overflow-y-auto bg-white bg-opacity-10 p-4 rounded-lg relative">
+            <div className="w-full h-full overflow-y-auto bg-black bg-opacity-70 p-4 rounded-lg">
               <h2 className="text-white text-lg mb-4">Your Playlists</h2>
               {/* Grid layout for playlists */}
               <div className="grid grid-cols-2 gap-4">
                 {playlists.length > 0 ? (
                   playlists.map((playlist) => (
-                    <div key={playlist.id} className="bg-gray-900 bg-opacity-30 rounded-lg p-4 flex flex-col items-center">
+                    <div
+                      key={playlist.id}
+                      className="bg-[#282828] bg-opacity-60 hover:bg-opacity-100 transition duration-200 rounded-lg p-4 flex flex-col items-center"
+                    >
                       <img
                         src={playlist.images[0]?.url}
                         alt={playlist.name}
@@ -125,10 +129,17 @@ function Dashboard() {
                         href={playlist.external_urls.spotify}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-white mt-2 text-center hover:underline"
+                        className="text-white mt-2 text-center font-semibold hover:underline"
                       >
                         {playlist.name}
                       </a>
+                      {/* Migrate Button */}
+                      <button
+                        className="mt-2 bg-[#1DB954] text-white py-1 px-4 rounded-full hover:bg-[#1ed760] transition duration-200"
+                        onClick={() => migrateSpotifyPlaylistToYouTube(playlist.id)}
+                      >
+                        Migrate
+                      </button>
                     </div>
                   ))
                 ) : (
@@ -145,7 +156,7 @@ function Dashboard() {
             </div>
           ) : (
             <button
-              className="bg-white text-black py-2 px-4 rounded-full"
+              className="bg-white text-black font-semibold py-2 px-4 rounded-full hover:bg-gray-200 transition duration-200"
               onClick={handleSpotifyLogin}
             >
               Login to Spotify
@@ -154,7 +165,7 @@ function Dashboard() {
         </div>
 
         {/* Right Section: YouTube Playlist Sync */}
-        <div className="w-[500px] h-[500px] bg-[#FF0000] flex flex-col items-center justify-center rounded-lg shadow-lg p-6">
+        <div className="w-[500px] h-[600px] bg-[#FF0000] flex flex-col items-center justify-center rounded-lg shadow-lg p-6">
           <h1 className="text-4xl text-white mb-6">YouTube</h1>
 
           {youtubeToken ? (
