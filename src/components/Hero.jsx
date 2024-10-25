@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import spotifyLogo from "../img/spotify_logo.png"; // Spotify logo
 import youtubeLogo from "../img/youtube_logo.png"; // YouTube logo
+import TextRevealTW from "./TextRevealTW";
 
 function Hero() {
   const [isHovered, setIsHovered] = useState(false);
@@ -65,13 +66,15 @@ function Hero() {
         {/* left side */}
         <div className="headings flex flex-col items-start justify-center h-[100%] text-[3rem]">
           <span>A smooth way to convert your</span>
-          <span>
+          <TextRevealTW/>
+          {/* The above componenet does it better than the code below yes */}
+          {/* <span>
             <b className="text-green-500">Spotify</b>
             <b> playlist to</b>
             <b className="text-red-500"> Youtube</b>
-          </span>
+          </span> */}
 
-          <span className="text-[15px] text-[#525D6E">
+          <span className="mt-4 text-[15px] text-[#525D6E">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
             <br />
             Magni sequi culpa officiis beatae corporis.
