@@ -1,0 +1,20 @@
+/* src/MainPage.css */
+.main-container {
+    text-align: center;
+    margin-top: 100px;
+  }
+  
+  .login-btn {
+    padding: 10px 20px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .google-btn:hover {
+    background-color: #357ae8;
+  }
+  

@@ -2,16 +2,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './index.css'; // Import the main CSS file
 import { GoogleOAuthProvider } from '@react-oauth/google';
-
-// Replace 'your-google-client-id' with your actual client ID
-const CLIENT_ID = 'your-google-client-id';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <GoogleOAuthProvider clientId={CLIENT_ID}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+  <GoogleOAuthProvider clientId='695092760166-7jgrr0mftmlja5bapimsbs4o28qcg0di.apps.googleusercontent.com'>
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
   </GoogleOAuthProvider>
 );
