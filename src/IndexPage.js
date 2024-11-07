@@ -121,4 +121,13 @@ function IndexPage() {
   );
 }
 
-export default IndexPage;
+<div className="youtube-card">
+    <div className="youtube-header">
+        <button className="logout-button">Logout</button>
+    </div>
+    <div className="youtube-content">
+        {/* Your YouTube playlists go here */}
+    </div>
+</div>
+
+

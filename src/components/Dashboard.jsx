@@ -10,11 +10,11 @@ const SPOTIFY_AUTH_URL = `https://accounts.spotify.com/authorize?response_type=t
 const YOUTUBE_CLIENT_ID = process.env.REACT_APP_YOUTUBE_CLIENT_ID;
 const YOUTUBE_REDIRECT_URI = process.env.REACT_APP_YOUTUBE_REDIRECT_URI;
 const YOUTUBE_API_BASE_URL = process.env.REACT_APP_YOUTUBE_API_BASE_URL;
-const YOUTUBE_AUTH_URL = `https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtube.readonly&redirect_uri=${YOUTUBE_REDIRECT_URI}&response_type=token&client_id=${YOUTUBE_CLIENT_ID}`;
+const YOUTUBE_AUTH_URL = `https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/youtube.force-ssl&redirect_uri=${YOUTUBE_REDIRECT_URI}&response_type=token&client_id=${YOUTUBE_CLIENT_ID}`;
 
 function Dashboard() {
   const [spotifyToken, setSpotifyToken] = useState(null);
-  const [youtubeToken, setYoutubeToken] = useState(null);
+  const [youtubeToken, setYoutubeToken] = useState(null); 
   const [playlists, setPlaylists] = useState([]);
   const [youtubePlaylists, setYoutubePlaylists] = useState([]);
 

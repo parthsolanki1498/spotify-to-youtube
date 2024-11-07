@@ -30,4 +30,35 @@
   .sync-btn:hover {
     background-color: #cc0000;
   }
-  
+  .youtube-card {
+    position: relative;
+    background-color: #FF0000; /* Matches the YouTube card color */
+    border-radius: 10px;
+    width: 100%; /* Adjust as needed */
+    height: 500px; /* Fixed height for the card */
+    overflow: hidden; /* Hide any overflow from the content */
+}
+
+.youtube-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #FF0000; /* Same background as YouTube card */
+    padding: 10px;
+    text-align: right; /* Aligns the button to the right */
+}
+
+.youtube-content {
+    overflow-y: auto;
+    height: calc(100% - 50px); /* Adjusts for the height of the header */
+    padding: 10px;
+}
+
+.logout-button {
+    background-color: #FF4D4D;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
