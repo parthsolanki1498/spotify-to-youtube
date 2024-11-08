@@ -165,11 +165,11 @@ function Dashboard() {
         </div>
 
         {/* Right Section: YouTube Playlist Sync */}
-        <div className="w-[500px] h-[600px] bg-[#FF0000] flex flex-col items-center justify-center rounded-lg shadow-lg p-6">
+        <div className="w-[500px] h-[600px] bg-[#FF0000] flex flex-col items-center justify-center rounded-lg shadow-lg p-6 relative">
           <h1 className="text-4xl text-white mb-6">YouTube</h1>
 
           {youtubeToken ? (
-            <div className="w-full h-full overflow-y-auto bg-white bg-opacity-10 p-4 rounded-lg relative">
+            <div className="w-full h-full overflow-y-auto bg-white bg-opacity-10 p-4 rounded-lg">
               <h2 className="text-white text-lg mb-4">Your YouTube Playlists</h2>
               <div className="grid grid-cols-2 gap-4">
                 {youtubePlaylists.length > 0 ? (
@@ -194,7 +194,7 @@ function Dashboard() {
                   <p className="text-white">No YouTube playlists found.</p>
                 )}
               </div>
-              {/* Logout Button */}
+              {/* YouTube Logout Button (Top-Right) */}
               <button
                 className="absolute top-4 right-4 bg-red-600 text-white py-2 px-4 rounded-full"
                 onClick={handleYouTubeLogout}
