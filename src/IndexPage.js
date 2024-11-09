@@ -1,11 +1,12 @@
 // src/IndexPage.js
 import React, { useState, useEffect } from 'react';
-import SpotifyWebApi from 'spotify-web-api-js';
-import axios from 'axios'; // We'll use Axios for API requests
+import axios from 'axios';
 import './IndexPage.css';
 import { useGoogleLogin } from '@react-oauth/google';
 
-const spotifyApi = new SpotifyWebApi();
+const CLIENT_ID = 'ccc7fb8ee2ea4e37bb027f290228395c'; // Your Spotify Client ID
+const REDIRECT_URI = 'http://localhost:3000/callback/spotify'; // Your Spotify Redirect URI
+const SCOPES = 'playlist-read-private playlist-modify-private';
 
 function IndexPage() {
   const [spotifyToken, setSpotifyToken] = useState(null);
@@ -14,69 +15,110 @@ function IndexPage() {
   const [youtubePlaylists, setYouTubePlaylists] = useState([]);
   const [youtubePlaylistSynced, setYouTubePlaylistSynced] = useState(false);
 
-  // Handle Spotify login and fetching playlists
+  // Spotify login redirect
   const handleSpotifyLogin = () => {
-    const CLIENT_ID = 'your-spotify-client-id';
-    const REDIRECT_URI = 'http://localhost:3000/index'; // Replace with actual redirect URI
-    const SCOPES = 'playlist-read-private playlist-modify-private';
-    const AUTH_URL = 'https://accounts.spotify.com/authorize?client_id=7bda4a5c09644c0392a0dc27abfa5056&response_type=token&redirect_uri=http://localhost:3000/callback&scope=playlist-read-private';    window.location.href = AUTH_URL;
+    const AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}`;
+    window.location.href = AUTH_URL;
   };
 
-  // Extract Spotify token from the URL (when redirected back)
+  // Extract Spotify authorization code from URL and exchange for access token
   useEffect(() => {
-    const hash = window.location.hash;
-    let token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token="));
-    if (token) {
-      token = token.split("=")[1];
-      setSpotifyToken(token);
-      spotifyApi.setAccessToken(token);
-      fetchSpotifyPlaylists();
+    const urlParams = new URLSearchParams(window.location.search);
+    const authorizationCode = urlParams.get('code');
+
+    if (authorizationCode) {
+      axios.post('http://localhost:3001/get_tokens', { code: authorizationCode })
+        .then(response => {
+          const { access_token, refresh_token } = response.data;
+          setSpotifyToken(access_token);
+          localStorage.setItem('spotifyRefreshToken', refresh_token); // Store refresh token
+          console.log('Spotify access token obtained and stored');
+        })
+        .catch(error => {
+          console.error('Error exchanging code for Spotify tokens:', error);
+        });
     }
   }, []);
 
-  // Fetch Spotify playlists using the Spotify API
-  const fetchSpotifyPlaylists = async () => {
+  // Function to refresh Spotify access token
+  const refreshAccessToken = async () => {
+    console.log('Attempting to send Spotify refresh request to backend'); // Log when attempting to refresh token
+
+    const refreshToken = localStorage.getItem('spotifyRefreshToken');
+    if (refreshToken) {
+      try {
+        const response = await axios.post('http://localhost:3001/refresh_token', { refresh_token: refreshToken });
+        const { access_token } = response.data;
+        setSpotifyToken(access_token);
+        console.log('Spotify token refreshed and set in state'); // Log when token is refreshed and set
+      } catch (error) {
+        console.error('Error refreshing Spotify access token:', error);
+      }
+    }
+  };
+
+  // Refresh Spotify token every 1 minute for testing
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshAccessToken();
+    }, 60 * 1000); // Refresh every 1 minute (60000 ms)
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Fetch Spotify playlists when token is available
+  useEffect(() => {
     if (spotifyToken) {
-      const response = await spotifyApi.getUserPlaylists();
-      setSpotifyPlaylists(response.items);
-    }
-  };
-
-  // Function to handle YouTube playlist sync (real data from API)
-  const handleYouTubeSync = async () => {
-    try {
-      const response = await axios.get(
-        'https://www.googleapis.com/youtube/v3/playlists', 
-        {
-          headers: {
-            Authorization: `Bearer ${youtubeToken}`,
-          },
-          params: {
-            part: 'snippet',
-            mine: true, // Get user's own playlists
-          }
+      axios.get('https://api.spotify.com/v1/me/playlists', {
+        headers: {
+          Authorization: `Bearer ${spotifyToken}`
         }
-      );
-      setYouTubePlaylists(response.data.items); // Set playlists from response
-      setYouTubePlaylistSynced(true);
-    } catch (error) {
-      console.error('Error fetching YouTube playlists:', error);
+      })
+      .then(response => {
+        setSpotifyPlaylists(response.data.items);
+      })
+      .catch(error => {
+        console.error('Error fetching Spotify playlists:', error);
+      });
     }
-  };
+  }, [spotifyToken]);
 
-  // Google login to get YouTube token
+  // YouTube login to get YouTube token
   const handleYouTubeLogin = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       setYouTubeToken(tokenResponse.access_token);
+      console.log('YouTube access token obtained and stored');
     },
     onError: () => console.log('Google Login Failed'),
     scope: 'https://www.googleapis.com/auth/youtube.readonly',
   });
 
+  // Sync YouTube playlists
+  const handleYouTubeSync = async () => {
+    if (youtubeToken) {
+      try {
+        const response = await axios.get('https://www.googleapis.com/youtube/v3/playlists', {
+          headers: {
+            Authorization: `Bearer ${youtubeToken}`
+          },
+          params: {
+            part: 'snippet',
+            mine: true
+          }
+        });
+        setYouTubePlaylists(response.data.items);
+        setYouTubePlaylistSynced(true);
+        console.log('YouTube playlists synced successfully');
+      } catch (error) {
+        console.error('Error fetching YouTube playlists:', error);
+      }
+    }
+  };
+
   return (
     <div className="index-container">
       <h1>Welcome to Spotify and YouTube Sync</h1>
-
+      
       {/* Spotify Login Button */}
       <button onClick={handleSpotifyLogin} className="login-btn spotify-btn">
         Login with Spotify
@@ -121,13 +163,4 @@ function IndexPage() {
   );
 }
 
-<div className="youtube-card">
-    <div className="youtube-header">
-        <button className="logout-button">Logout</button>
-    </div>
-    <div className="youtube-content">
-        {/* Your YouTube playlists go here */}
-    </div>
-</div>
-
-
+export default IndexPage;
