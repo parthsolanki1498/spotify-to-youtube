@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors'); // Import CORS
 
 const CLIENT_ID = 'ccc7fb8ee2ea4e37bb027f290228395c'; // Your Client ID
-const CLIENT_SECRET = '26f2d9dba0384ed6a981d313e9d464c1'; // Your Client Secret
 const REDIRECT_URI = 'http://localhost:3000/callback/spotify'; // Your Redirect URI
 
 const app = express();
