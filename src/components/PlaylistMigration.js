@@ -1,8 +1,8 @@
 // Fetch Spotify playlist tracks
 export const getSpotifyPlaylistTracks = async (playlistId, token) => {
-  const response = await fetch(https://api.spotify.com/v1/playlists/${playlistId}/tracks, {
+  const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
     headers: {
-      Authorization: Bearer ${token},
+      Authorization: `Bearer ${token}`,
     },
   });
   const data = await response.json();
@@ -16,9 +16,9 @@ const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
 // Search for a track on YouTube
 export const searchYouTubeForTrack = async (track, youtubeToken) => {
-  const query = ${track.name} ${track.artist};
+  const query = `${track.name} ${track.artist}`;
   const response = await fetch(
-    https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${API_KEY}
+    `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${API_KEY}`
   );
   const data = await response.json();
   return data.items[0]?.id?.videoId; // Get the first video result's ID
@@ -27,11 +27,11 @@ export const searchYouTubeForTrack = async (track, youtubeToken) => {
 // Create a new YouTube playlist with a specified title
 export const createYouTubePlaylist = async (youtubeToken, title) => {
   const response = await fetch(
-    https://www.googleapis.com/youtube/v3/playlists?part=snippet,status,
+    `https://www.googleapis.com/youtube/v3/playlists?part=snippet,status`,
     {
       method: 'POST',
       headers: {
-        Authorization: Bearer ${youtubeToken},
+        Authorization: `Bearer ${youtubeToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -52,11 +52,11 @@ export const createYouTubePlaylist = async (youtubeToken, title) => {
 // Add a track to the YouTube playlist
 export const addTrackToYouTubePlaylist = async (youtubeToken, playlistId, videoId) => {
   await fetch(
-    https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,
+    `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet`,
     {
       method: 'POST',
       headers: {
-        Authorization: Bearer ${youtubeToken},
+        Authorization: `Bearer ${youtubeToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -82,9 +82,9 @@ export const migrateSpotifyPlaylistToYouTube = async (playlistId) => {
     const tracks = await getSpotifyPlaylistTracks(playlistId, spotifyToken);
 
     // 2. Get the Spotify playlist name
-    const playlistResponse = await fetch(https://api.spotify.com/v1/playlists/${playlistId}, {
+    const playlistResponse = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
       headers: {
-        Authorization: Bearer ${spotifyToken},
+        Authorization: `Bearer ${spotifyToken}`,
       },
     });
     const playlistData = await playlistResponse.json();
@@ -100,8 +100,8 @@ export const migrateSpotifyPlaylistToYouTube = async (playlistId) => {
         await addTrackToYouTubePlaylist(youtubeToken, youtubePlaylistId, videoId);
       }
     }
-    console.log(Successfully migrated playlist: ${playlistName});
+    console.log(`Successfully migrated playlist: ${playlistName}`);
   } catch (error) {
-    console.error('Error migrating playlist:', error);
-  }
+    console.error('Error migrating playlist:', error);
+  }
 };
