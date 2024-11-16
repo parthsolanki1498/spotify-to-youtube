@@ -99,7 +99,8 @@ function Dashboard() {
   };
 
   // Function to handle YouTube logout
-  const handleYouTubeLogout = () => {
-    setYoutubeToken(null); // Clear YouTube token
-    setYoutubePlaylists([]); // Clear YouTube playlists
-    local
+const handleYouTubeLogout = () => {
+  setYoutubeToken(null); // Clear YouTube token
+  setYoutubePlaylists([]); // Clear YouTube playlists
+  localStorage.removeItem('youtubeToken'); // Remove token from local storage
+};
