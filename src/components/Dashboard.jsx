@@ -17,9 +17,8 @@ function Dashboard() {
   const [youtubeToken, setYoutubeToken] = useState(null);
   const [playlists, setPlaylists] = useState([]);
   const [youtubePlaylists, setYoutubePlaylists] = useState([]);
-  const [migratedPlaylists, setMigratedPlaylists] = useState([]);
 
-  // Get the Spotify token and migrated playlists from local storage
+  // Get the Spotify token from local storage
   useEffect(() => {
     const storedSpotifyToken = localStorage.getItem('spotifyToken');
     if (storedSpotifyToken) {
@@ -30,9 +29,6 @@ function Dashboard() {
     if (storedYoutubeToken) {
       setYoutubeToken(storedYoutubeToken);
     }
-
-    const storedMigratedPlaylists = JSON.parse(localStorage.getItem('migratedPlaylists')) || [];
-    setMigratedPlaylists(storedMigratedPlaylists);
   }, []);
 
   // Fetch the user's Spotify playlists
@@ -50,7 +46,7 @@ function Dashboard() {
           return response.json();
         })
         .then((data) => {
-          setPlaylists(data.items || []);
+          setPlaylists(data.items || []); // Set Spotify playlists in state
         })
         .catch((error) => {
           console.error('Error fetching Spotify playlists:', error);
@@ -73,7 +69,7 @@ function Dashboard() {
           return response.json();
         })
         .then((data) => {
-          setYoutubePlaylists(data.items || []);
+          setYoutubePlaylists(data.items || []); // Set YouTube playlists in state
         })
         .catch((error) => {
           console.error('Error fetching YouTube playlists:', error);
@@ -83,94 +79,139 @@ function Dashboard() {
 
   // Function to handle Spotify login
   const handleSpotifyLogin = () => {
-    window.location.href = SPOTIFY_AUTH_URL;
+    window.location.href = SPOTIFY_AUTH_URL; // Redirect to Spotify login
   };
 
   // Function to handle YouTube login
   const handleYouTubeLogin = () => {
-    window.location.href = YOUTUBE_AUTH_URL;
+    window.location.href = YOUTUBE_AUTH_URL; // Redirect to YouTube login
   };
 
   // Function to handle Spotify logout
   const handleSpotifyLogout = () => {
-    setSpotifyToken(null);
-    setPlaylists([]);
-    localStorage.removeItem('spotifyToken');
+    setSpotifyToken(null); // Clear the token state
+    setPlaylists([]); // Clear playlists state
+    localStorage.removeItem('spotifyToken'); // Remove token from local storage
   };
 
   // Function to handle YouTube logout
   const handleYouTubeLogout = () => {
-    setYoutubeToken(null);
-    setYoutubePlaylists([]);
-    localStorage.removeItem('youtubeToken');
-  };
-
-  // Handle migration from Spotify to YouTube
-  const handleMigration = async (spotifyPlaylistId) => {
-    try {
-      const migrated = await migrateSpotifyPlaylistToYouTube(spotifyPlaylistId, youtubeToken);
-      setMigratedPlaylists((prev) => [...prev, migrated]);
-      localStorage.setItem('migratedPlaylists', JSON.stringify([...migratedPlaylists, migrated]));
-    } catch (error) {
-      console.error('Error migrating playlist:', error);
-    }
+    setYoutubeToken(null); // Clear YouTube token
+    setYoutubePlaylists([]); // Clear YouTube playlists
+    localStorage.removeItem('youtubeToken'); // Remove token from local storage
   };
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      
-      {/* Spotify Login/Logout */}
-      {!spotifyToken ? (
-        <button onClick={handleSpotifyLogin}>Login to Spotify</button>
-      ) : (
-        <button onClick={handleSpotifyLogout}>Logout of Spotify</button>
-      )}
+    <div className="h-screen bg-[#081730] flex items-center justify-center">
+      {/* Container for the two boxes */}
+      <div className="flex space-x-16">
+        {/* Left Section: Spotify Login and Playlists */}
+        <div className="w-[500px] h-[600px] bg-[#1DB954] flex flex-col items-center justify-center rounded-lg shadow-lg p-6 relative">
+          <h1 className="text-4xl text-white font-bold mb-6">Spotify</h1>
 
-      {/* YouTube Login/Logout */}
-      {!youtubeToken ? (
-        <button onClick={handleYouTubeLogin}>Login to YouTube</button>
-      ) : (
-        <button onClick={handleYouTubeLogout}>Logout of YouTube</button>
-      )}
+          {spotifyToken ? (
+            <div className="w-full h-full overflow-y-auto bg-black bg-opacity-70 p-4 rounded-lg">
+              <h2 className="text-white text-lg mb-4">Your Playlists</h2>
+              {/* Grid layout for playlists */}
+              <div className="grid grid-cols-2 gap-4">
+                {playlists.length > 0 ? (
+                  playlists.map((playlist) => (
+                    <div
+                      key={playlist.id}
+                      className="bg-[#282828] bg-opacity-60 hover:bg-opacity-100 transition duration-200 rounded-lg p-4 flex flex-col items-center"
+                    >
+                      <img
+                        src={playlist.images[0]?.url}
+                        alt={playlist.name}
+                        className="w-full h-32 object-cover rounded"
+                      />
+                      <a
+                        href={playlist.external_urls.spotify}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white mt-2 text-center font-semibold hover:underline"
+                      >
+                        {playlist.name}
+                      </a>
+                      {/* Migrate Button */}
+                      <button
+                        className="mt-2 bg-[#1DB954] text-white py-1 px-4 rounded-full hover:bg-[#1ed760] transition duration-200"
+                        onClick={() => migrateSpotifyPlaylistToYouTube(playlist.id)}
+                      >
+                        Migrate
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-white">No playlists found.</p>
+                )}
+              </div>
+              {/* Logout Button */}
+              <button
+                className="absolute top-4 right-4 bg-red-600 text-white py-2 px-4 rounded-full"
+                onClick={handleSpotifyLogout}
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              className="bg-white text-black font-semibold py-2 px-4 rounded-full hover:bg-gray-200 transition duration-200"
+              onClick={handleSpotifyLogin}
+            >
+              Login to Spotify
+            </button>
+          )}
+        </div>
 
-      {/* Display Spotify Playlists */}
-      <h2>Spotify Playlists</h2>
-      {playlists.length === 0 ? (
-        <p>No Spotify playlists found</p>
-      ) : (
-        <ul>
-          {playlists.map((playlist) => (
-            <li key={playlist.id}>
-              {playlist.name} <button onClick={() => handleMigration(playlist.id)}>Migrate to YouTube</button>
-            </li>
-          ))}
-        </ul>
-      )}
+        {/* Right Section: YouTube Playlist Sync */}
+        <div className="w-[500px] h-[600px] bg-[#FF0000] flex flex-col items-center justify-center rounded-lg shadow-lg p-6">
+          <h1 className="text-4xl text-white mb-6">YouTube</h1>
 
-      {/* Display YouTube Playlists */}
-      <h2>YouTube Playlists</h2>
-      {youtubePlaylists.length === 0 ? (
-        <p>No YouTube playlists found</p>
-      ) : (
-        <ul>
-          {youtubePlaylists.map((playlist) => (
-            <li key={playlist.id}>{playlist.snippet.title}</li>
-          ))}
-        </ul>
-      )}
-
-      {/* Display Migrated Playlists */}
-      <h2>Migrated Playlists</h2>
-      {migratedPlaylists.length === 0 ? (
-        <p>No playlists have been migrated</p>
-      ) : (
-        <ul>
-          {migratedPlaylists.map((playlist, index) => (
-            <li key={index}>{playlist.name}</li>
-          ))}
-        </ul>
-      )}
+          {youtubeToken ? (
+            <div className="w-full h-full overflow-y-auto bg-white bg-opacity-10 p-4 rounded-lg relative">
+              <h2 className="text-white text-lg mb-4">Your YouTube Playlists</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {youtubePlaylists.length > 0 ? (
+                  youtubePlaylists.map((playlist) => (
+                    <div key={playlist.id} className="bg-gray-900 bg-opacity-30 rounded-lg p-4 flex flex-col items-center">
+                      <img
+                        src={playlist.snippet.thumbnails.default.url}
+                        alt={playlist.snippet.title}
+                        className="w-full h-32 object-cover rounded"
+                      />
+                      <a
+                        href={`https://www.youtube.com/playlist?list=${playlist.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white mt-2 text-center hover:underline"
+                      >
+                        {playlist.snippet.title}
+                      </a>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-white">No YouTube playlists found.</p>
+                )}
+              </div>
+              {/* Logout Button */}
+              <button
+                className="absolute top-4 right-4 bg-red-600 text-white py-2 px-4 rounded-full"
+                onClick={handleYouTubeLogout}
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              className="bg-white text-black py-2 px-4 rounded-full"
+              onClick={handleYouTubeLogin}
+            >
+              Sync YouTube Playlist
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
