@@ -19,7 +19,7 @@ function Dashboard() {
   const [youtubePlaylists, setYoutubePlaylists] = useState([]);
   const [migratedPlaylists, setMigratedPlaylists] = useState([]);
 
-  // Get the Spotify token from local storage
+  // Get the Spotify token and migrated playlists from local storage
   useEffect(() => {
     const storedSpotifyToken = localStorage.getItem('spotifyToken');
     if (storedSpotifyToken) {
@@ -102,5 +102,4 @@ function Dashboard() {
   const handleYouTubeLogout = () => {
     setYoutubeToken(null); // Clear YouTube token
     setYoutubePlaylists([]); // Clear YouTube playlists
-    localStorage.removeItem('youtubeToken'); // Remove token from local storage
-  };
+    local
