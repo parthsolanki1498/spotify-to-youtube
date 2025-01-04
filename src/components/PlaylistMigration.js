@@ -25,7 +25,7 @@ export const getSpotifyPlaylistTracks = async (playlistId, token) => {
   };
   
   // Create a new YouTube playlist
-  export const createYouTubePlaylist = async (youtubeToken) => {
+  export const createYouTubePlaylist = async (youtubeToken, playlistName) => {
     const response = await fetch(
       `https://www.googleapis.com/youtube/v3/playlists?part=snippet,status`,
       {
@@ -36,7 +36,7 @@ export const getSpotifyPlaylistTracks = async (playlistId, token) => {
         },
         body: JSON.stringify({
           snippet: {
-            title: 'Migrated Spotify Playlist',
+            title: playlistName,
             description: 'Playlist migrated from Spotify',
           },
           status: {
@@ -73,7 +73,7 @@ export const getSpotifyPlaylistTracks = async (playlistId, token) => {
   };
   
   // Full migration process from Spotify to YouTube
-  export const migrateSpotifyPlaylistToYouTube = async (playlistId) => {
+  export const migrateSpotifyPlaylistToYouTube = async (playlistId, playlistName) => {
     try {
       const spotifyToken = localStorage.getItem('spotifyToken');
       const youtubeToken = localStorage.getItem('youtubeToken');
@@ -82,7 +82,7 @@ export const getSpotifyPlaylistTracks = async (playlistId, token) => {
       const tracks = await getSpotifyPlaylistTracks(playlistId, spotifyToken);
   
       // 2. Create a YouTube playlist
-      const youtubePlaylistId = await createYouTubePlaylist(youtubeToken);
+      const youtubePlaylistId = await createYouTubePlaylist(youtubeToken, playlistName);
   
       // 3. Search and add each track to YouTube playlist
       for (const track of tracks) {

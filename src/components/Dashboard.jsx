@@ -136,7 +136,7 @@ function Dashboard() {
                       {/* Migrate Button */}
                       <button
                         className="mt-2 bg-[#1DB954] text-white py-1 px-4 rounded-full hover:bg-[#1ed760] transition duration-200"
-                        onClick={() => migrateSpotifyPlaylistToYouTube(playlist.id)}
+                        onClick={() => migrateSpotifyPlaylistToYouTube(playlist.id, playlist.name)}
                       >
                         Migrate
                       </button>

@@ -16,7 +16,7 @@ const errorMessage = (error) => {
     console.log(error);
 };
 
-  const buttonStyle = 'border-[2px] rounded-[10px] border-[#232A4E] px-[25px] py-[7px]'
+  // const buttonStyle = 'border-[2px] rounded-[10px] border-[#232A4E] px-[25px] py-[7px]'
   return (
 
     
@@ -29,6 +29,7 @@ const errorMessage = (error) => {
 
       {/* Side Menu */}
       <CenterMenu/>
+      
       {/* Buttons */}
       {/* <div className='buttons flex'>
         <button className={`mr-[35px] hover:bg-[#232A4E]` + buttonStyle}>Log in</button>

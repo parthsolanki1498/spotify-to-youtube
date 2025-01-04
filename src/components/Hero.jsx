@@ -75,9 +75,9 @@ function Hero() {
           </span> */}
 
           <span className="mt-4 text-[15px] text-[#525D6E">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Move your favorite playlists from Spotify to Youtube in just few clicks!.
             <br />
-            Magni sequi culpa officiis beatae corporis.
+            A seamless migration tool which ensures your music expeirence stays uninterrupted.
           </span>
         </div>
 
